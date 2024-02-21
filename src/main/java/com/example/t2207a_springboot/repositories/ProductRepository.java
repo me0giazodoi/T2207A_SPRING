@@ -2,11 +2,24 @@ package com.example.t2207a_springboot.repositories;
 
 import com.example.t2207a_springboot.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
-    List<Product> findByNameContainingIgnoreCase(String name);
+    List<Product> findAllByNameContaining(String name);
+    List<Product> findAllByNameContainingOrDescriptionContaining(String search,String description);
+    List<Product> findAllByPrice(Integer price);
+
+    @Query("SELECT p from Product p "+
+            "WHERE (:name is NULL OR p.name LIKE %:name%) "+
+            "AND (:minPrice is NULL OR p.price >= :minPrice) "+
+            "AND (:maxPrice is NULL OR p.price <= :maxPrice) "
+    )
+    List<Product> filterProducts(@Param("name") String name,
+                                 @Param("minPrice") Integer minPrice,
+                                 @Param("maxPrice") Integer maxPrice);
 }

@@ -40,7 +40,11 @@ public class ProductService {
     public void deleteProduct(Long id){
         productRepository.deleteById(id);
     }
-    public List<Product> getProductsByName(String name) {
-        return productRepository.findByNameContainingIgnoreCase(name);
+    public List<Product> searchProduct(String search){
+        return productRepository.findAllByNameContainingOrDescriptionContaining(search,search);
+    }
+
+    public List<Product> filterProducts(String name,Integer minPrice,Integer maxPrice){
+        return productRepository.filterProducts(name,minPrice,maxPrice);
     }
 }
